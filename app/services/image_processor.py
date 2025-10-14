@@ -27,13 +27,11 @@ class ImageProcessor:
     def _load_model(self):
         """Load the machine learning model"""
         try:
-            # TODO: Replace with actual model loading
-            # Example for TensorFlow/Keras:
-            # import tensorflow as tf
-            # self.model = tf.keras.models.load_model(settings.MODEL_PATH)
+            import keras
             
-            # For now, we'll simulate a loaded model
-            logger.info("Model loading simulated - replace with actual model loading")
+            # Load the model using tensorflow.keras
+            model_path = settings.get_model_path()
+            self.model = keras.models.load_model(model_path)
             self.model_loaded = True
             
         except Exception as e:

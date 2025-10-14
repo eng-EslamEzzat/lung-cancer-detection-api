@@ -104,6 +104,13 @@ async def startup_event():
     logger.info(f"Starting {settings.APP_NAME} v{settings.APP_VERSION}")
     logger.info(f"Debug mode: {settings.DEBUG}")
     logger.info(f"CORS origins: {settings.get_allowed_origins()}")
+    
+    # Check model status
+    from app.services.image_processor import image_processor
+    if image_processor.model_loaded:
+        logger.info("✅ Model loaded successfully and ready for predictions")
+    else:
+        logger.error("❌ Model failed to load - predictions will not work")
 
 
 @app.on_event("shutdown")
