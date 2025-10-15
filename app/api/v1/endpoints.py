@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 from typing import Dict, Any
 from fastapi import APIRouter, File, UploadFile, HTTPException, status
+from PIL import UnidentifiedImageError
 from fastapi.responses import JSONResponse
 
 from app.core.config import settings
@@ -93,6 +94,7 @@ async def predict_image(file: UploadFile = File(...)):
         # Read file data
         image_data = await file.read()
         
+        # Explicitly handle empty uploads as bad request
         if not image_data:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -115,6 +117,13 @@ async def predict_image(file: UploadFile = File(...)):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Invalid image file: {str(e)}"
+        )
+        
+    except UnidentifiedImageError as e:
+        logger.warning(f"Unidentified/invalid image for {file.filename}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid image file"
         )
         
     except RuntimeError as e:

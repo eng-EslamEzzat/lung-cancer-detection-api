@@ -187,9 +187,8 @@ class TestLungCancerAPI:
             files = {'file': ('empty.jpg', io.BytesIO(file_content), 'image/jpeg')}
             response = requests.post(PREDICT_ENDPOINT, files=files, timeout=30)
             
-            # Empty file currently returns 500 (internal error) instead of 400
-            # This is expected behavior as PIL cannot process empty files
-            assert response.status_code == 500
+            # Empty file should be treated as a bad request
+            assert response.status_code == 400
                 
             print("✅ Empty file correctly rejected")
         
