@@ -286,7 +286,7 @@ PORT=8000
 # File Processing
 MAX_FILE_SIZE=52428800  # 50MB
 MODEL_PATH="/app/models/lung_cancer_model.h5"
-MODEL_INPUT_SIZE="224,224"
+MODEL_INPUT_SIZE="256,256"
 CONFIDENCE_THRESHOLD=0.5
 
 # Security
@@ -318,7 +318,7 @@ If you want to use your own trained model:
 
 2. **Update model configuration** in `.env` if needed:
    ```env
-   MODEL_INPUT_SIZE="224,224"  # Adjust based on your model
+   MODEL_INPUT_SIZE="256,256"  # Adjust based on your model
    CONFIDENCE_THRESHOLD=0.5    # Adjust threshold as needed
    ```
 
