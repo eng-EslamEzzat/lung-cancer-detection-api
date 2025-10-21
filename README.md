@@ -84,9 +84,31 @@ microservices/fastapi/
 ## 🛠️ Deployment Options
 
 ### 📋 Prerequisites
+- **Git LFS**: Required for model file management ([Download Git LFS](https://git-lfs.github.com/))
 - **Local**: Python 3.9+, Anaconda environment
 - **Docker**: Docker Desktop (Windows/Mac) or Docker Engine (Linux)
 - At least 2GB RAM available
+
+### 🔧 Git LFS Setup (First Time Only)
+
+If you're cloning this repository for the first time, ensure Git LFS is properly set up:
+
+```powershell
+# 1. Install Git LFS (if not already installed)
+# Download from: https://git-lfs.github.com/
+
+# 2. Initialize Git LFS globally (one-time setup)
+git lfs install
+
+# 3. Clone the repository (Git LFS will automatically download the model)
+git clone https://github.com/eng-EslamEzzat/lung-cancer-detection-api.git
+cd lung-cancer-detection-api
+
+# 4. Verify the model file is downloaded
+ls -la models/lung_cancer_model.h5
+```
+
+**Note**: The model file (48 MB) will be automatically downloaded when you clone the repository with Git LFS installed.
 
 ### 🚀 Quick Start (3 Methods)
 
@@ -107,17 +129,21 @@ python deploy.py docker --test
 
 #### Method 2: Local Development
 ```powershell
-# 1. Activate Anaconda environment
+# 1. Clone repository with Git LFS
+git clone https://github.com/eng-EslamEzzat/lung-cancer-detection-api.git
+cd lung-cancer-detection-api
+
+# 2. Activate Anaconda environment
 & "E:/Coding/Anaconda3/shell/condabin/conda-hook.ps1"; conda activate
 
-# 2. Install dependencies
-pip install -r requirements-local.txt
+# 3. Install dependencies
+pip install -r requirements.txt
 
-# 3. Configure environment
+# 4. Configure environment
 copy .env.example .env
 # Edit .env file as needed
 
-# 4. Run the server
+# 5. Run the server
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
@@ -268,26 +294,39 @@ SECRET_KEY="your-secret-key-here"
 ALLOWED_ORIGINS="*"
 ```
 
-### Adding Your Model
+### Model Information
 
-1. **Place your trained model** in the microservice directory:
+The lung cancer detection model is **already included** in this repository using Git LFS:
+
+- **Model File**: `models/lung_cancer_model.h5` (48 MB)
+- **Model Type**: Keras/TensorFlow model
+- **Input Size**: 256x256 pixels
+- **Classes**: Benign Case, Malignant Case, Normal Case
+
+#### Using Your Own Model
+
+If you want to use your own trained model:
+
+1. **Replace the existing model**:
    ```powershell
-   mkdir models
+   # Backup the original model
+   copy models\lung_cancer_model.h5 models\lung_cancer_model_backup.h5
+   
+   # Replace with your model
    copy your_model.h5 models\lung_cancer_model.h5
    ```
 
-2. **Update docker-compose.yml** to mount the model:
-   ```yaml
-   volumes:
-     - ./models:/app/models:ro
+2. **Update model configuration** in `.env` if needed:
+   ```env
+   MODEL_INPUT_SIZE="224,224"  # Adjust based on your model
+   CONFIDENCE_THRESHOLD=0.5    # Adjust threshold as needed
    ```
 
-3. **Modify the image processor** (`app/services/image_processor.py`):
-   ```python
-   def _load_model(self):
-       import tensorflow as tf
-       self.model = tf.keras.models.load_model(settings.MODEL_PATH)
-       self.model_loaded = True
+3. **Commit your model changes**:
+   ```powershell
+   git add models/lung_cancer_model.h5
+   git commit -m "Update model with custom trained model"
+   git push origin main
    ```
 
 ## 🐳 Docker Configuration
