@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     
     # Model Settings (Docker and local compatible)
     MODEL_PATH: str = "./models/lung_cancer_model.h5"
-    MODEL_INPUT_SIZE: str = "224,224"  # Default input size as string
+    MODEL_INPUT_SIZE: str = "256,256"  # Default input size as string
     CONFIDENCE_THRESHOLD: float = 0.5
     
     # Logging

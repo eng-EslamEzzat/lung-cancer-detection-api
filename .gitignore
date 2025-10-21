@@ -64,11 +64,10 @@ coverage.xml
 .env.production
 
 # Machine Learning Models
-*.h5
+# *.h5 files are now managed by Git LFS (see .gitattributes)
 *.pkl
 *.joblib
 *.model
-models/*.h5
 models/*.pkl
 models/*.joblib
 models/*.model
@@ -116,6 +115,7 @@ desktop.ini
 # Test files
 test_images/
 temp_test_files/
+test.*
 
 # Docker volumes
 postgres_data/

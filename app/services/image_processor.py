@@ -76,9 +76,9 @@ class ImageProcessor:
     
     def preprocess_image(self, image: Image.Image) -> np.ndarray:
         """Preprocess image for model prediction"""
-        # Convert to RGB if necessary
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
+        # Convert from RGB to B&W if necessary
+        if image.mode != 'L':
+            image = image.convert('L')
         
         # Resize to model input size
         target_size = settings.get_model_input_size()
@@ -102,29 +102,29 @@ class ImageProcessor:
         try:
             if not self.model_loaded:
                 raise RuntimeError("Model not loaded")
+
+            # Get model predictions (softmax probabilities)
+            predictions = self.model.predict(preprocessed_image)
             
-            # TODO: Replace with actual model prediction
-            # Example for TensorFlow/Keras:
-            # predictions = self.model.predict(preprocessed_image)
-            # class_probabilities = predictions[0]
+            # Extract probabilities for each class
+            class_probs = predictions[0]  # Get probabilities for the single image
             
-            # Mock prediction for demonstration
-            # In a real implementation, replace this with actual model inference
-            mean_intensity = np.mean(preprocessed_image)
+            # Get the predicted class index (highest probability)
+            predicted_class_idx = np.argmax(class_probs)
             
-            # Simulate different prediction classes
-            if mean_intensity > 0.6:
-                prediction_class = "Normal"
-                confidence = 0.85
-                probabilities = {"Normal": 0.85, "Suspicious": 0.10, "Malignant": 0.05}
-            elif mean_intensity > 0.4:
-                prediction_class = "Suspicious" 
-                confidence = 0.73
-                probabilities = {"Normal": 0.20, "Suspicious": 0.73, "Malignant": 0.07}
-            else:
-                prediction_class = "Malignant"
-                confidence = 0.91
-                probabilities = {"Normal": 0.05, "Suspicious": 0.04, "Malignant": 0.91}
+            # Get confidence (highest probability value)
+            confidence = float(np.max(class_probs))
+            
+            # Map the predicted class index to the corresponding label
+            class_labels = ["Benign Case", "Malignant Case", "Normal Case"]
+            prediction_class = class_labels[predicted_class_idx]
+            
+            # Create probabilities dictionary
+            probabilities = {
+                "Benign Case": float(class_probs[0]),
+                "Malignant Case": float(class_probs[1]),
+                "Normal Case": float(class_probs[2])
+            }
             
             processing_time = (time.time() - start_time) * 1000  # Convert to milliseconds
             
