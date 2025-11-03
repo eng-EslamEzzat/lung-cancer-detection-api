@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 # Copy requirements first to leverage Docker cache
-COPY requirements-local.txt requirements.txt
+COPY requirements.txt requirements.txt
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
@@ -30,6 +30,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy application code
 COPY app/ app/
+
+# Copy model files
+COPY models/ models/
 
 # Copy environment configuration
 COPY .env .
